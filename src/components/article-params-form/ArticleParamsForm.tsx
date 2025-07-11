@@ -62,7 +62,7 @@ export const ArticleParamsForm = ({
       <aside
         className={clsx({
           [styles.container]: true,
-          [styles.container_open]: openState, // Если меню открыто
+          [styles.container_open]: openState, 
         })}
         ref={asideRef}
       >
