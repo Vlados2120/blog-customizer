@@ -3,15 +3,14 @@ import arrow from 'src/images/arrow.svg'; /* не понимаю почему н
 import styles from './ArrowButton.module.scss';
 import clsx from 'clsx';
 
-/** Функция для обработки открытия/закрытия формы */
 export type OnClick = () => void;
 
-interface ArrowButtonProps {
+interface PropsArrowButton {
 	toggleOpen: OnClick;
 	openState: boolean;
 }
 
-export const ArrowButton = ({ toggleOpen, openState }: ArrowButtonProps) => {
+export const ArrowButton = ({ toggleOpen, openState }: PropsArrowButton) => {
 	return (
 		/* Не забываем указаывать role и aria-label атрибуты для интерактивных элементов */
 		<div
