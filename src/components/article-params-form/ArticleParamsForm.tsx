@@ -1,68 +1,76 @@
 import clsx from 'clsx';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
+
 import { ArrowButton } from 'src/components/ui/arrow-button';
 import { Button } from 'src/components/ui/button';
-import { RadioGroup } from '../ui/radio-group';
-import { Text } from '../ui/text';
+import { RadioGroup } from 'src/components/ui/radio-group';
+import { Text } from 'src/components/ui/text';
 import { Separator } from 'src/components/ui/separator';
+import { Select } from 'src/components/ui/select';
+import { useOutsideClickClose } from 'src/components/ui/select/hooks/useOutsideClickClose';
+import { Article } from '../article/Article';
+
+import {
+  OptionType,
+  fontFamilyOptions,
+  fontSizeOptions,
+  fontColors,
+  backgroundColors,
+  contentWidthArr,
+  defaultArticleState,
+} from 'src/constants/articleProps';
+
 import styles from './ArticleParamsForm.module.scss';
-import { OptionType, fontFamilyOptions, fontSizeOptions, fontColors, backgroundColors, contentWidthArr } from 'src/constants/articleProps';
-import { Select } from '../ui/select';
-import { defaultArticleState } from 'src/constants/articleProps';
-import { Options } from 'src/index';
-import { useOutsideClickClose } from '../ui/select/hooks/useOutsideClickClose';
 
-export type ChangeSelectFn = (selection: OptionType) => void;
-
-interface PropsArticleParamsForm {
-  toggleOpen: () => void;
-  openState: boolean;
-  setPageState: React.Dispatch<React.SetStateAction<Options>>;
+export interface Options {
+  fontFamilyOption: OptionType;
+  fontSizeOption: OptionType;
+  fontColor: OptionType;
+  backgroundColor: OptionType;
+  contentWidth: OptionType;
 }
 
-export const ArticleParamsForm = ({
-  toggleOpen,
-  openState,
-  setPageState,
-}: PropsArticleParamsForm) => {
+export const ArticleParamsForm = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [formState, setFormState] = useState<Options>(defaultArticleState);
+  const [appliedState, setAppliedState] = useState<Options>(defaultArticleState);
 
   const asideRef = useRef<HTMLDivElement>(null);
 
-
   useOutsideClickClose({
-    isOpen: openState,
-    onChange: toggleOpen,
+    isOpen,
+    onChange: () => setIsOpen(false),
     rootRef: asideRef,
   });
 
+  function toggleOpen() {
+    setIsOpen((prev) => !prev);
+  }
+
   function setDefaultOptions() {
     setFormState(defaultArticleState);
-    setPageState(defaultArticleState);
+    setAppliedState(defaultArticleState);
   }
 
   function submitForm(evt: React.SyntheticEvent) {
     evt.preventDefault();
-    setPageState(formState);
+    setAppliedState(formState);
   }
 
   function handleChange(field: keyof Options, selected: OptionType) {
-    setFormState((oldState) => ({
-      ...oldState,
+    setFormState((prev) => ({
+      ...prev,
       [field]: selected,
     }));
   }
 
   return (
     <>
-      <div ref={asideRef}>
-        <ArrowButton toggleOpen={toggleOpen} openState={openState} />
-      </div>
+      <ArrowButton toggleOpen={toggleOpen} openState={isOpen} />
 
       <aside
-        className={clsx({
-          [styles.container]: true,
-          [styles.container_open]: openState, 
+        className={clsx(styles.container, {
+          [styles.container_open]: isOpen,
         })}
         ref={asideRef}
       >
@@ -115,6 +123,21 @@ export const ArticleParamsForm = ({
           </div>
         </form>
       </aside>
+
+      <div
+        style={
+          {
+            '--container-width': appliedState.contentWidth.value,
+            '--bg-color': appliedState.backgroundColor.value,
+            '--font-family': appliedState.fontFamilyOption.value,
+            '--font-size': appliedState.fontSizeOption.value,
+            '--font-color': appliedState.fontColor.value,
+          } as React.CSSProperties
+        }
+      >
+        <Article />
+      </div>
     </>
   );
 };
+
