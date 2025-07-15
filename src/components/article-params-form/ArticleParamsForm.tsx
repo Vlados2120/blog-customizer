@@ -1,14 +1,13 @@
 import clsx from 'clsx';
 import { useRef, useState } from 'react';
 
-import { ArrowButton } from 'src/components/ui/arrow-button';
+import { ArrowButton } from 'src/components/ui/arrow-button/ArrowButton';
 import { Button } from 'src/components/ui/button';
 import { RadioGroup } from 'src/components/ui/radio-group';
 import { Text } from 'src/components/ui/text';
 import { Separator } from 'src/components/ui/separator';
 import { Select } from 'src/components/ui/select';
 import { useOutsideClickClose } from 'src/components/ui/select/hooks/useOutsideClickClose';
-import { Article } from '../article/Article';
 
 import {
   OptionType,
@@ -30,10 +29,14 @@ export interface Options {
   contentWidth: OptionType;
 }
 
-export const ArticleParamsForm = () => {
+interface Props {
+  appliedState: Options;
+  setAppliedState: React.Dispatch<React.SetStateAction<Options>>;
+}
+
+export const ArticleParamsForm = ({ appliedState, setAppliedState }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formState, setFormState] = useState<Options>(defaultArticleState);
-  const [appliedState, setAppliedState] = useState<Options>(defaultArticleState);
+  const [formState, setFormState] = useState<Options>(appliedState);
 
   const asideRef = useRef<HTMLDivElement>(null);
 
@@ -123,21 +126,6 @@ export const ArticleParamsForm = () => {
           </div>
         </form>
       </aside>
-
-      <div
-        style={
-          {
-            '--container-width': appliedState.contentWidth.value,
-            '--bg-color': appliedState.backgroundColor.value,
-            '--font-family': appliedState.fontFamilyOption.value,
-            '--font-size': appliedState.fontSizeOption.value,
-            '--font-color': appliedState.fontColor.value,
-          } as React.CSSProperties
-        }
-      >
-        <Article />
-      </div>
     </>
   );
 };
-
